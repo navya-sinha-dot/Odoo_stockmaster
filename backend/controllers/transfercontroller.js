@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 import StockLedger from "../models/StockLedger.js";
 import mongoose from "mongoose";
 
-// ---------- CREATE TRANSFER (DRAFT) ----------
+//create transfer
 export const createTransfer = async (req, res) => {
   try {
     const { reference, items } = req.body;
@@ -25,7 +25,7 @@ export const createTransfer = async (req, res) => {
   }
 };
 
-// ---------- GET ALL TRANSFERS ----------
+//get all transfers
 export const getTransfers = async (req, res) => {
   try {
     const transfers = await Transfer.find()
@@ -40,7 +40,7 @@ export const getTransfers = async (req, res) => {
   }
 };
 
-// ---------- VALIDATE TRANSFER (UPDATE STOCK) ----------
+//validate
 export const validateTransfer = async (req, res) => {
   const session = await mongoose.startSession();
   try {

@@ -3,17 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
 import AuthContext from "../../context/AuthContext";
-
+import logo from "../../assets/logo2.jpg"; // LOGO
 export default function Login() {
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW
 
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
   const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     try {
       const res = await api.post("/auth/login", { loginId, password });
 
@@ -21,6 +25,7 @@ export default function Login() {
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.msg || "Invalid login credentials");
+      setLoading(false); // stop loader on failure
     }
   };
 
@@ -46,13 +51,15 @@ export default function Login() {
         className="w-full max-w-md bg-white rounded-xl shadow p-8 border border-gray-200"
       >
         {/* App Logo */}
-        <div className="flex justify-center mb-6">
-          <div
-            className="h-16 w-16 rounded-xl flex items-center justify-center text-white text-xl font-bold"
-            style={{ background: "#473472" }}
-          >
-            SM
-          </div>
+        <div className="flex justify-center">
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              style={{ objectFit: "contain" }}
+            />
+          </Link>
         </div>
 
         <h2
@@ -106,12 +113,19 @@ export default function Login() {
             />
           </div>
 
+          {/* Login Button with Loader */}
           <button
             type="submit"
-            className="w-full text-white py-2 rounded-md font-semibold mt-2"
+            disabled={loading}
+            className={`w-full text-white py-2 rounded-md font-semibold mt-2 flex items-center justify-center 
+              ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
             style={{ background: "#473472" }}
           >
-            Sign In
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
 

@@ -1,11 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TopNavDashboard from "../components/TopNavDashboard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import api from "../api";
 
 export default function Dashboard() {
+  const [stats, setStats] = useState({
+    totalStock: 0,
+    pendingReceipts: 0,
+    pendingDeliveries: 0,
+    lowStockItems: 0,
+  });
+
+  const [latestTransfers, setLatestTransfers] = useState([]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    const [productsRes, receiptsRes, deliveriesRes, ledgerRes] =
+      await Promise.all([
+        api.get("/products"),
+        api.get("/receipts"),
+        api.get("/deliveries"),
+        api.get("/ledger"),
+      ]);
+
+    const products = productsRes.data || [];
+    const receipts = receiptsRes.data || [];
+    const deliveries = deliveriesRes.data || [];
+    const ledger = ledgerRes.data.items || [];
+
+    // Total Stock
+    const totalStock = products.reduce((sum, p) => {
+      const total = Object.values(p.stockByLocation || {}).reduce(
+        (a, b) => a + b,
+        0
+      );
+      return sum + total;
+    }, 0);
+
+    // Pending Receipts
+    const pendingReceipts = receipts.filter(
+      (r) => r.status === "Draft" || r.status === "Ready"
+    ).length;
+
+    // Pending Deliveries
+    const pendingDeliveries = deliveries.filter(
+      (d) => d.status === "Draft" || d.status === "Ready"
+    ).length;
+
+    // Low Stock (threshold: 10)
+    const lowStockItems = products.filter((p) => {
+      const total = Object.values(p.stockByLocation || {}).reduce(
+        (a, b) => a + b,
+        0
+      );
+      return total < 10;
+    }).length;
+
+    // Latest 3 transfers
+    const transfers = ledger
+      .filter((l) => l.type === "Transfer")
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3);
+
+    setStats({
+      totalStock,
+      pendingReceipts,
+      pendingDeliveries,
+      lowStockItems,
+    });
+
+    setLatestTransfers(transfers);
+  };
+
   return (
-    <div style={{ background: "#f2f8ff" }} className="min-h-screen">
+    <div className="min-h-screen" style={{ background: "#f2f8ff" }}>
       <TopNavDashboard />
 
       {/* PAGE TITLE */}
@@ -16,60 +88,125 @@ export default function Dashboard() {
         Dashboard
       </h1>
 
-      {/* RECEIPT + DELIVERY CARDS */}
-      <div className="flex flex-col lg:flex-row justify-center gap-10 px-10">
-        {/* RECEIPT CARD */}
+      {/* MAIN GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-10">
+        {/* TOTAL PRODUCTS IN STOCK */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200 w-[350px]"
+          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200"
         >
-          <h2
-            className="text-xl font-semibold mb-4"
-            style={{ color: "#473472" }}
-          >
-            Receipt
+          <h2 className="text-xl font-semibold" style={{ color: "#473472" }}>
+            Total Products in Stock
           </h2>
-
-          <Link
-            to="/receipts"
-            className="px-6 py-2 rounded-lg mb-4 border block text-center"
-            style={{ borderColor: "#473472", color: "#473472" }}
-          >
-            4 to receive
-          </Link>
-
-          <p className="text-sm text-gray-700">
-            <span className="font-medium">1 Late</span> <br />
-            <span className="font-medium">6 operations</span>
+          <p className="text-4xl mt-4 font-bold" style={{ color: "#473472" }}>
+            {stats.totalStock}
           </p>
         </motion.div>
 
-        {/* DELIVERY CARD */}
+        {/* PENDING RECEIPTS */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200 w-[350px]"
+          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200"
+        >
+          <h2 className="text-xl font-semibold" style={{ color: "#473472" }}>
+            Pending Receipts
+          </h2>
+          <Link
+            to="/receipts"
+            className="text-3xl mt-4 font-bold block"
+            style={{ color: "#473472" }}
+          >
+            {stats.pendingReceipts}
+          </Link>
+        </motion.div>
+
+        {/* PENDING DELIVERIES */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200"
+        >
+          <h2 className="text-xl font-semibold" style={{ color: "#473472" }}>
+            Pending Deliveries
+          </h2>
+          <Link
+            to="/delivery"
+            className="text-3xl mt-4 font-bold block"
+            style={{ color: "#473472" }}
+          >
+            {stats.pendingDeliveries}
+          </Link>
+        </motion.div>
+
+        {/* LOW STOCK ITEMS */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200 col-span-1 lg:col-span-1"
+        >
+          <h2 className="text-xl font-semibold" style={{ color: "#473472" }}>
+            Low Stock Items
+          </h2>
+          <p
+            className="text-3xl mt-4 font-bold"
+            style={{ color: stats.lowStockItems > 0 ? "red" : "#473472" }}
+          >
+            {stats.lowStockItems}
+          </p>
+        </motion.div>
+
+        {/* LATEST INTERNAL TRANSFERS */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white p-8 rounded-3xl shadow-md border border-gray-200 lg:col-span-2"
         >
           <h2
             className="text-xl font-semibold mb-4"
             style={{ color: "#473472" }}
           >
-            Delivery
+            Latest Internal Transfers
           </h2>
-          <Link
-            to="/delivery"
-            className="px-6 py-2 rounded-lg mb-4 border block text-center"
-            style={{ borderColor: "#473472", color: "#473472" }}
-          >
-            4 to Deliver
-          </Link>
 
-          <p className="text-sm text-gray-700">
-            <span className="font-medium">1 Late</span> <br />
-            <span className="font-medium">2 waiting</span> <br />
-            <span className="font-medium">6 operations</span>
-          </p>
+          {latestTransfers.length === 0 ? (
+            <p className="text-gray-500">No transfers yet.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr
+                  style={{
+                    borderBottom: "2px solid #473472",
+                    color: "#473472",
+                  }}
+                >
+                  <th className="text-left pb-2">Product</th>
+                  <th className="text-left pb-2">Qty</th>
+                  <th className="text-left pb-2">Location</th>
+                  <th className="text-left pb-2">Date</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {latestTransfers.map((t, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="py-2">{t.product?.name || "—"}</td>
+                    <td
+                      className="py-2"
+                      style={{ color: t.change > 0 ? "green" : "red" }}
+                    >
+                      {t.change}
+                    </td>
+                    <td className="py-2">{t.location?.name || "—"}</td>
+                    <td className="py-2">
+                      {new Date(t.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </motion.div>
       </div>
     </div>

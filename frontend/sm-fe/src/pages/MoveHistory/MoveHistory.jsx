@@ -8,42 +8,70 @@ import { motion } from "framer-motion";
 export default function MoveHistory() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     load();
   }, []);
 
+  // Extract reference from note → e.g. "(REF-001)"
+  const extractRef = (note) => {
+    const match = note?.match(/\((.*?)\)/);
+    return match ? match[1] : "—";
+  };
+
   const load = async () => {
-    setLoading(true);
     try {
-      const res = await api.get("/ledger/grouped");
+      const res = await api.get("/ledger");
 
-      const raw = res.data.items || [];
+      // backend returns: { items: [...] }
+      const lines = res.data.items || [];
 
-      // Flatten grouped ledger into table rows
-      const flattened = raw.flatMap((entry) =>
-        entry.lines.map((line) => ({
-          reference: entry.reference,
-          date: entry.date,
-          type: entry.type,
+      const rows = lines.map((line) => {
+        let status = "";
+        let from = "—";
+        let to = "—";
+
+        // RECEIPT → IN
+        if (line.type === "Receipt") {
+          status = "IN";
+          to = line.location?.name || "—";
+        }
+
+        // DELIVERY → OUT
+        else if (line.type === "Delivery") {
+          status = "OUT";
+          from = line.location?.name || "—";
+        }
+
+        // TRANSFERS (2 rows per transfer: IN and OUT)
+        else if (line.type === "Transfer") {
+          if (line.change > 0) {
+            status = "IN";
+            to = line.location?.name || "—";
+          } else {
+            status = "OUT";
+            from = line.location?.name || "—";
+          }
+        }
+
+        return {
+          reference: extractRef(line.note), // FIXED
+          date: line.createdAt,
           product: line.product?.name || "",
-          contact: entry.contact || line.product?.name || "",
-          from: line.from || line.location?.name || "—",
-          to: line.to || "—",
+          from,
+          to,
           quantity: line.change,
-          status: entry.type === "Receipt" ? "IN" : "OUT",
-        }))
-      );
+          status,
+        };
+      });
 
-      setItems(flattened);
+      setItems(rows);
     } catch (err) {
       console.error("Failed to load move history", err);
     }
-    setLoading(false);
   };
 
-  // Filter by search keyword
+  // Search filter
   const filtered = items.filter((r) =>
     [r.reference, r.product, r.from, r.to, r.status]
       .join(" ")
@@ -63,16 +91,15 @@ export default function MoveHistory() {
         Move History
       </h1>
 
-      {/* Rounded Container */}
+      {/* MAIN CARD */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto mt-10 p-8 rounded-3xl bg-white border shadow-md relative"
+        className="mx-auto mt-10 p-8 rounded-3xl bg-white border shadow-md"
         style={{ width: "92%", borderColor: "#473472" }}
       >
         {/* TOP BAR */}
         <div className="flex justify-between items-center mb-4">
-          {/* NEW Button */}
           <button
             className="px-6 py-2 rounded-lg border font-semibold"
             style={{ borderColor: "#473472", color: "#473472" }}
@@ -80,7 +107,6 @@ export default function MoveHistory() {
             NEW
           </button>
 
-          {/* Search + View Icons */}
           <div className="flex items-center gap-4">
             {/* Search */}
             <div className="flex items-center gap-2">
@@ -94,7 +120,6 @@ export default function MoveHistory() {
               <FiSearch size={20} style={{ color: "#473472" }} />
             </div>
 
-            {/* Icons */}
             <MdViewList size={26} style={{ color: "#473472" }} />
             <MdViewKanban size={26} style={{ color: "#473472" }} />
           </div>
@@ -111,7 +136,7 @@ export default function MoveHistory() {
             >
               <th className="text-left pb-2">Reference</th>
               <th className="text-left pb-2">Date</th>
-              <th className="text-left pb-2">Contact</th>
+              <th className="text-left pb-2">Product</th>
               <th className="text-left pb-2">From</th>
               <th className="text-left pb-2">To</th>
               <th className="text-left pb-2">Quantity</th>
@@ -130,9 +155,11 @@ export default function MoveHistory() {
               filtered.map((row, index) => (
                 <tr key={index} className="border-t hover:bg-gray-50">
                   <td className="p-3">{row.reference}</td>
+
                   <td className="p-3">
                     {new Date(row.date).toLocaleDateString()}
                   </td>
+
                   <td className="p-3">{row.product}</td>
                   <td className="p-3">{row.from}</td>
                   <td className="p-3">{row.to}</td>
@@ -145,7 +172,7 @@ export default function MoveHistory() {
                     {row.quantity}
                   </td>
 
-                  {/* Status color */}
+                  {/* Status with color */}
                   <td
                     className="p-3 font-semibold"
                     style={{
@@ -165,7 +192,7 @@ export default function MoveHistory() {
           </tbody>
         </table>
 
-        {/* NOTES BELOW TABLE */}
+        {/* NOTES */}
         <div
           className="mt-10 text-gray-700"
           style={{ fontFamily: "handwriting, sans-serif" }}
@@ -174,9 +201,9 @@ export default function MoveHistory() {
             Populate all moves done between the From → To location in inventory.
           </p>
           <p className="mb-2">
-            If a single reference has multiple products, display it in multiple
-            rows.
+            If a single reference has multiple products, display multiple rows.
           </p>
+
           <p className="mb-2 text-green-600">
             In events should be displayed in green
           </p>

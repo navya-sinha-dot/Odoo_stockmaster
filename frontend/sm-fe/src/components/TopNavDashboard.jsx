@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import OperationsPopup from "./Opeartionspopup";
 import SettingsPopup from "./SettingsPopup";
 import AuthContext from "../context/AuthContext";
+import logo from "../assets/logo2.jpg"; // LOGO
 
 export default function TopNavDashboard() {
   const [openOps, setOpenOps] = useState(false);
@@ -18,12 +19,21 @@ export default function TopNavDashboard() {
         style={{ borderBottom: "2px solid #473472" }}
       >
         {/* LEFT NAV LINKS */}
-        <div className="flex items-center gap-10 text-lg font-semibold">
+        <div className="flex items-center gap-8 text-lg font-semibold">
+          {/* LOGO — FIXED HEIGHT */}
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-14 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              style={{ objectFit: "contain" }}
+            />
+          </Link>
+
           <Link to="/dashboard" style={{ color: "#473472" }}>
             Dashboard
           </Link>
 
-          {/* OPERATIONS */}
           <button onClick={() => setOpenOps(true)} style={{ color: "#473472" }}>
             Operations
           </button>
@@ -36,7 +46,6 @@ export default function TopNavDashboard() {
             Move History
           </Link>
 
-          {/* SETTINGS */}
           <button
             onClick={() => setOpenSettings(true)}
             style={{ color: "#473472" }}
@@ -45,7 +54,7 @@ export default function TopNavDashboard() {
           </button>
         </div>
 
-        {/* RIGHT SIDE → USER + LOGOUT */}
+        {/* RIGHT SIDE USER + LOGOUT */}
         <div className="flex items-center gap-5">
           {user && (
             <span className="font-medium" style={{ color: "#473472" }}>
@@ -56,7 +65,7 @@ export default function TopNavDashboard() {
           {user && (
             <button
               onClick={logout}
-              className="font-semibold"
+              className="font-semibold cursor-pointer"
               style={{ color: "#473472" }}
             >
               Logout
@@ -65,7 +74,6 @@ export default function TopNavDashboard() {
         </div>
       </div>
 
-      {/* POPUPS */}
       <OperationsPopup open={openOps} onClose={() => setOpenOps(false)} />
       <SettingsPopup
         open={openSettings}

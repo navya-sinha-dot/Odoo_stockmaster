@@ -2,18 +2,24 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
-
+import logo from "../../assets/logo2.jpg"; // LOGO
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW
 
   const submit = async (e) => {
     e.preventDefault();
+    setMsg(null);
+    setLoading(true);
+
     try {
       await api.post("/otp/send", { email });
       setMsg("OTP has been sent to your email!");
     } catch (err) {
       setMsg("Failed to send OTP. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,12 +35,14 @@ export default function ForgotPassword() {
       >
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div
-            className="h-16 w-16 rounded-xl flex items-center justify-center text-white text-xl font-bold"
-            style={{ background: "#473472" }}
-          >
-            SM
-          </div>
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              style={{ objectFit: "contain" }}
+            />
+          </Link>
         </div>
 
         <h2
@@ -49,7 +57,15 @@ export default function ForgotPassword() {
 
         {/* Form */}
         <form onSubmit={submit} className="space-y-4">
-          {msg && <div className="text-sm text-green-600">{msg}</div>}
+          {msg && (
+            <div
+              className={`text-sm text-center ${
+                msg.includes("sent") ? "text-green-600" : "text-red-500"
+              }`}
+            >
+              {msg}
+            </div>
+          )}
 
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
@@ -68,13 +84,19 @@ export default function ForgotPassword() {
             />
           </div>
 
-          {/* Button */}
+          {/* Button with Loader */}
           <button
             type="submit"
-            className="w-full text-white py-2 rounded-md font-semibold"
+            disabled={loading}
+            className={`w-full text-white py-2 rounded-md font-semibold flex items-center justify-center
+              ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
             style={{ background: "#473472" }}
           >
-            Send OTP
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              "Send OTP"
+            )}
           </button>
         </form>
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
+import logo from "../../assets/logo2.jpg"; // LOGO
 
 export default function Signup() {
   const [loginId, setLoginId] = useState("");
@@ -9,21 +10,28 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [msg, setMsg] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW
 
   const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
+    setMsg(null);
+
     if (password !== rePassword) {
       setMsg("Passwords do not match");
       return;
     }
 
     try {
+      setLoading(true);
+
       await api.post("/auth/register", { loginId, email, password });
+
       navigate("/auth/login");
     } catch (err) {
       setMsg(err.response?.data?.msg || "Signup failed");
+      setLoading(false); // stop loader on failure
     }
   };
 
@@ -42,19 +50,22 @@ export default function Signup() {
           <span className="text-md">←</span> Back to Home
         </Link>
       </div>
+
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white rounded-xl shadow p-8 border border-gray-200"
       >
         {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div
-            className="h-16 w-16 rounded-xl flex items-center justify-center text-white text-xl font-bold"
-            style={{ background: "#473472" }}
-          >
-            SM
-          </div>
+        <div className="flex justify-center">
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              style={{ objectFit: "contain" }}
+            />
+          </Link>
         </div>
 
         <h2
@@ -124,7 +135,7 @@ export default function Signup() {
             />
           </div>
 
-          {/* Re-enter */}
+          {/* Re-enter Password */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Re-enter Password
@@ -142,13 +153,19 @@ export default function Signup() {
             />
           </div>
 
-          {/* Button */}
+          {/* Signup Button with Loader */}
           <button
             type="submit"
-            className="w-full text-white py-2 rounded-md font-semibold mt-2"
+            disabled={loading}
+            className={`w-full text-white py-2 rounded-md font-semibold mt-2 flex items-center justify-center
+              ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
             style={{ background: "#473472" }}
           >
-            Sign Up
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
 
