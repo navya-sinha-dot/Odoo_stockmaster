@@ -17,16 +17,26 @@ const receiptItemSchema = new mongoose.Schema({
 
 const receiptSchema = new mongoose.Schema({
   supplier: { type: String },
+
   reference: { type: String },
+
+  scheduleDate: { type: Date },
+
   items: [receiptItemSchema],
+
   status: {
     type: String,
-    enum: ["Draft", "Validated", "Canceled"],
+    enum: ["Draft", "Ready", "Done", "Canceled"],
     default: "Draft",
   },
+
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
   validatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   validatedAt: Date,
+
+  doneAt: Date,
+
   createdAt: { type: Date, default: Date.now },
 });
 

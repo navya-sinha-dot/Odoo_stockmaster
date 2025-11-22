@@ -6,32 +6,27 @@ import AuthContext from "../../context/AuthContext";
 
 export default function ReceiptForm() {
   const { id } = useParams();
-  const isNew = !id;
+  const isNew = !id || id === "new";
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
 
   const [reference, setReference] = useState("");
-  const [receiveFrom, setReceiveFrom] = useState("");
+  const [supplier, setSupplier] = useState("");
   const [scheduleDate, setScheduleDate] = useState("");
-  const [responsible, setResponsible] = useState(user?.loginId || "");
   const [status, setStatus] = useState("Draft");
-  const [note, setNote] = useState("");
 
   const [items, setItems] = useState([
     { product: "", quantity: 1, location: "" },
   ]);
 
-  // NEW: store dropdown data
   const [products, setProducts] = useState([]);
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
     loadDropdownData();
-
-    // ONLY load receipt when ID is valid
-    if (id && id !== "new") loadReceipt();
+    if (!isNew) loadReceipt();
   }, [id]);
 
   const loadDropdownData = async () => {
@@ -48,13 +43,11 @@ export default function ReceiptForm() {
       const res = await api.get(`/receipts/${id}`);
       const r = res.data;
 
-      setReference(r.reference);
-      setReceiveFrom(r.receiveFrom || "");
+      setReference(r.reference || "");
+      setSupplier(r.supplier || "");
       setScheduleDate(r.scheduleDate ? r.scheduleDate.slice(0, 10) : "");
-      setResponsible(r.responsible || user?.loginId || "");
       setStatus(r.status || "Draft");
       setItems(r.items || []);
-      setNote(r.note || "");
     } catch (err) {
       console.error(err);
     }
@@ -63,46 +56,39 @@ export default function ReceiptForm() {
 
   const save = async () => {
     const payload = {
-      reference,
-      receiveFrom,
+      supplier,
       scheduleDate,
-      responsible,
       items,
-      note,
     };
 
     try {
-      if (!id || id === "new") {
-        // CREATE
+      if (isNew) {
         await api.post("/receipts", payload);
-        navigate("/receipts");
       } else {
-        // UPDATE
         await api.put(`/receipts/${id}`, payload);
-        navigate("/receipts");
       }
+      navigate("/receipts");
     } catch (err) {
       console.error(err);
       alert("Save failed");
     }
   };
 
-  const markReady = async () => {
+  const validate = async () => {
     try {
-      await api.put(`/receipts/${id}/status`, { status: "Ready" });
-      setStatus("Ready");
-    } catch (err) {
-      alert("Could not set to Ready");
-    }
-  };
-
-  const validateAndDone = async () => {
-    try {
-      await api.put(`/receipts/${id}/validate`);
-      setStatus("Done");
+      await api.post(`/receipts/${id}/validate`);
       await loadReceipt();
     } catch (err) {
       alert("Validation failed");
+    }
+  };
+
+  const complete = async () => {
+    try {
+      await api.post(`/receipts/${id}/complete`);
+      await loadReceipt();
+    } catch (err) {
+      alert("Completion failed");
     }
   };
 
@@ -110,9 +96,9 @@ export default function ReceiptForm() {
     setItems([...items, { product: "", quantity: 1, location: "" }]);
 
   const updateLine = (index, field, value) => {
-    const updated = [...items];
-    updated[index][field] = value;
-    setItems(updated);
+    const copy = [...items];
+    copy[index][field] = value;
+    setItems(copy);
   };
 
   return (
@@ -123,7 +109,6 @@ export default function ReceiptForm() {
         className="mx-auto mt-8 p-8 rounded-3xl bg-white border shadow-md"
         style={{ width: "92%", borderColor: "#473472" }}
       >
-        {/* TOP BUTTON BAR */}
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => navigate("/receipts")}
@@ -142,19 +127,27 @@ export default function ReceiptForm() {
               Print
             </button>
 
-            <button
-              onClick={() => {
-                if (confirm("Cancel receipt?")) navigate("/receipts");
-              }}
-              className="px-4 py-2 border rounded"
-              style={{ borderColor: "#53629E" }}
-            >
-              Cancel
-            </button>
+            {status === "Draft" && !isNew && (
+              <button
+                onClick={validate}
+                className="px-4 py-2 border rounded"
+                style={{ borderColor: "#53629E", color: "#53629E" }}
+              >
+                Validate → Ready
+              </button>
+            )}
+
+            {status === "Ready" && (
+              <button
+                onClick={complete}
+                className="px-4 py-2 border rounded bg-green-600 text-white"
+              >
+                Validate → Done
+              </button>
+            )}
           </div>
         </div>
 
-        {/* TITLE */}
         <h2 className="text-2xl font-bold mb-6" style={{ color: "#473472" }}>
           {isNew ? "New Receipt" : `Receipt ${reference}`}
         </h2>
@@ -162,11 +155,13 @@ export default function ReceiptForm() {
         {/* HEADER DETAILS */}
         <div className="grid grid-cols-2 gap-6 mb-10">
           <div>
-            <label className="block text-sm mb-1">Receive From</label>
+            <label className="block text-sm mb-1">
+              Receive From (Supplier)
+            </label>
             <input
               className="w-full border p-2 rounded"
-              value={receiveFrom}
-              onChange={(e) => setReceiveFrom(e.target.value)}
+              value={supplier}
+              onChange={(e) => setSupplier(e.target.value)}
               placeholder="Supplier / Vendor"
             />
           </div>
@@ -182,15 +177,6 @@ export default function ReceiptForm() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1">Responsible</label>
-            <input
-              className="w-full border p-2 rounded"
-              value={responsible}
-              onChange={(e) => setResponsible(e.target.value)}
-            />
-          </div>
-
-          <div>
             <label className="block text-sm mb-1">Status</label>
             <div
               className="p-2 rounded border"
@@ -201,7 +187,6 @@ export default function ReceiptForm() {
           </div>
         </div>
 
-        {/* PRODUCT LINES */}
         <h3 className="font-semibold mb-2">Products</h3>
 
         <div className="border rounded-lg overflow-hidden">
@@ -210,7 +195,6 @@ export default function ReceiptForm() {
               key={i}
               className="grid grid-cols-12 gap-4 items-center p-4 border-b"
             >
-              {/* PRODUCT DROPDOWN */}
               <div className="col-span-6">
                 <select
                   className="w-full border p-2 rounded"
@@ -226,7 +210,6 @@ export default function ReceiptForm() {
                 </select>
               </div>
 
-              {/* QUANTITY */}
               <div className="col-span-3">
                 <input
                   type="number"
@@ -237,7 +220,6 @@ export default function ReceiptForm() {
                 />
               </div>
 
-              {/* LOCATION DROPDOWN */}
               <div className="col-span-3">
                 <select
                   className="w-full border p-2 rounded"
@@ -256,7 +238,6 @@ export default function ReceiptForm() {
           ))}
         </div>
 
-        {/* ADD PRODUCT */}
         <button
           onClick={addLine}
           className="mt-4 px-4 py-2 border rounded"
@@ -265,16 +246,17 @@ export default function ReceiptForm() {
           + Add Product
         </button>
 
-        {/* SAVE BUTTON */}
-        <div className="mt-10">
-          <button
-            onClick={save}
-            className="px-6 py-2 rounded text-white font-semibold"
-            style={{ background: "#473472" }}
-          >
-            Save Receipt
-          </button>
-        </div>
+        {status === "Draft" && (
+          <div className="mt-10">
+            <button
+              onClick={save}
+              className="px-6 py-2 rounded text-white font-semibold"
+              style={{ background: "#473472" }}
+            >
+              Save Receipt
+            </button>
+          </div>
+        )}
       </motion.div>
     </div>
   );

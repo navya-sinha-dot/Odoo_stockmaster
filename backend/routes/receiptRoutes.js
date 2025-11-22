@@ -4,6 +4,7 @@ import {
   getReceipts,
   getReceipt,
   validateReceipt,
+  completeReceipt,
   cancelReceipt,
 } from "../controllers/receiptcontroller.js";
 
@@ -12,7 +13,10 @@ const router = express.Router();
 router.post("/", createReceipt);
 router.get("/", getReceipts);
 router.get("/:id", getReceipt);
+
 router.post("/:id/validate", validateReceipt);
+router.post("/:id/complete", completeReceipt);
+
 router.post("/:id/cancel", cancelReceipt);
 
 export default router;
