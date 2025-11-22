@@ -3,16 +3,19 @@ import Product from "../models/Product.js";
 import StockLedger from "../models/StockLedger.js";
 import mongoose from "mongoose";
 
-//create delivery
+// CREATE DELIVERY
 export const createDelivery = async (req, res) => {
   try {
-    const { from, to, contact, scheduleDate, customer, reference, items } =
-      req.body;
+    const { from, to, contact, scheduleDate, customer, items } = req.body;
 
     if (!items || items.length === 0)
       return res
         .status(400)
         .json({ msg: "Delivery must have at least one item" });
+
+    // Auto-generate reference
+    const count = await Delivery.countDocuments();
+    const reference = `WH1/OUT/${String(count + 1).padStart(4, "0")}`;
 
     const delivery = await Delivery.create({
       from,
@@ -23,6 +26,7 @@ export const createDelivery = async (req, res) => {
       reference,
       items,
       createdBy: req.user?._id || null,
+      status: "Draft",
     });
 
     res.json({ msg: "Delivery created", delivery });
@@ -31,15 +35,12 @@ export const createDelivery = async (req, res) => {
   }
 };
 
-//get all deliveries
+// GET LIST OF DELIVERIES
 export const getDeliveries = async (req, res) => {
   try {
     const data = await Delivery.find()
       .populate("items.product", "name sku")
-      .populate("from", "name shortCode")
       .populate("items.location", "name shortCode")
-      .populate("createdBy", "loginId")
-      .populate("validatedBy", "loginId")
       .sort({ createdAt: -1 });
 
     res.json(data);
@@ -48,7 +49,7 @@ export const getDeliveries = async (req, res) => {
   }
 };
 
-//get one item delivery
+// GET SINGLE DELIVERY
 export const getDelivery = async (req, res) => {
   try {
     const delivery = await Delivery.findById(req.params.id)
@@ -63,7 +64,39 @@ export const getDelivery = async (req, res) => {
   }
 };
 
-//validate delivery
+// CHECK STOCK + MOVE TO WAITING/READY
+export const checkStock = async (req, res) => {
+  try {
+    const delivery = await Delivery.findById(req.params.id);
+    if (!delivery) return res.status(404).json({ msg: "Delivery not found" });
+
+    let allAvailable = true;
+
+    for (const item of delivery.items) {
+      const product = await Product.findById(item.product);
+      const locKey = item.location.toString();
+
+      const current = product.stockByLocation.get(locKey) || 0;
+
+      if (current < item.quantity) {
+        allAvailable = false;
+        break;
+      }
+    }
+
+    delivery.status = allAvailable ? "Ready" : "Waiting";
+    await delivery.save();
+
+    res.json({
+      msg: `Delivery moved to ${delivery.status}`,
+      delivery,
+    });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// VALIDATE → DONE + STOCK REDUCE
 export const validateDelivery = async (req, res) => {
   const session = await mongoose.startSession();
   try {
@@ -72,24 +105,21 @@ export const validateDelivery = async (req, res) => {
     const delivery = await Delivery.findById(req.params.id).session(session);
     if (!delivery) throw new Error("Delivery not found");
 
-    if (delivery.status !== "Draft")
-      throw new Error("Only Draft deliveries can be validated");
+    if (delivery.status !== "Ready")
+      throw new Error("Only Ready deliveries can be validated");
 
-    // LOOP THROUGH EACH ITEM AND DEDUCT STOCK
+    // Stock deduction
     for (const item of delivery.items) {
       const product = await Product.findById(item.product).session(session);
-      if (!product) throw new Error(`Product ${item.product} not found`);
-
       const locKey = item.location.toString();
       const current = product.stockByLocation.get(locKey) || 0;
 
       if (current < item.quantity)
-        throw new Error(`Not enough stock for product ${product.name}`);
+        throw new Error(`Not enough stock for ${product.name}`);
 
       product.stockByLocation.set(locKey, current - item.quantity);
       await product.save({ session });
 
-      // LEDGER ENTRY (-)
       await StockLedger.create(
         [
           {
@@ -98,29 +128,27 @@ export const validateDelivery = async (req, res) => {
             change: -item.quantity,
             type: "Delivery",
             refId: delivery._id,
+            note: `Delivery validated (${delivery.reference})`,
             createdBy: req.user?._id || null,
-            note: `Delivery validated (${delivery.reference}) to ${delivery.to}`,
           },
         ],
         { session }
       );
     }
 
-    delivery.status = "Validated";
+    delivery.status = "Done";
     delivery.validatedAt = new Date();
+    delivery.doneAt = new Date();
     delivery.validatedBy = req.user?._id || null;
+
     await delivery.save({ session });
 
     await session.commitTransaction();
     session.endSession();
 
-    const populated = await Delivery.findById(delivery._id)
-      .populate("items.product", "name sku")
-      .populate("items.location", "name shortCode");
-
     res.json({
-      msg: "Delivery validated and stock updated",
-      delivery: populated,
+      msg: "Delivery validated & stock updated",
+      delivery,
     });
   } catch (err) {
     await session.abortTransaction();
@@ -129,16 +157,16 @@ export const validateDelivery = async (req, res) => {
   }
 };
 
-//cancel delivery
+// CANCEL
 export const cancelDelivery = async (req, res) => {
   try {
     const delivery = await Delivery.findById(req.params.id);
     if (!delivery) return res.status(404).json({ msg: "Delivery not found" });
 
-    if (delivery.status !== "Draft")
+    if (delivery.status === "Done")
       return res
         .status(400)
-        .json({ msg: "Only Draft deliveries can be canceled" });
+        .json({ msg: "Done deliveries cannot be canceled" });
 
     delivery.status = "Canceled";
     await delivery.save();

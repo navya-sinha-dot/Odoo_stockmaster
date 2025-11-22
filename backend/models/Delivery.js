@@ -19,26 +19,29 @@ const deliverySchema = new mongoose.Schema({
   from: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Location",
-    required: false,
   },
 
-  to: { type: String },
+  to: { type: String }, // delivery address
   contact: { type: String },
   scheduleDate: { type: Date },
 
   customer: { type: String },
   reference: { type: String },
+
   items: [deliveryItemSchema],
 
   status: {
     type: String,
-    enum: ["Draft", "Validated", "Canceled"],
+    enum: ["Draft", "Waiting", "Ready", "Done", "Canceled"],
     default: "Draft",
   },
 
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   validatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
   validatedAt: Date,
+  doneAt: Date,
+
   createdAt: { type: Date, default: Date.now },
 });
 
