@@ -11,13 +11,13 @@ const ledgerSchema = new mongoose.Schema({
     ref: "Location",
     required: true,
   },
-  change: { type: Number, required: true }, // +ve for incoming, -ve for outgoing
+  change: { type: Number, required: true },
   type: {
     type: String,
     enum: ["Receipt", "Delivery", "Transfer", "Adjustment"],
     required: true,
   },
-  refId: { type: mongoose.Schema.Types.ObjectId }, // e.g., receipt id
+  refId: { type: mongoose.Schema.Types.ObjectId },
   note: String,
   createdAt: { type: Date, default: Date.now },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

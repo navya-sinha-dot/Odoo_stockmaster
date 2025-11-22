@@ -3,11 +3,10 @@ import Product from "../models/Product.js";
 import StockLedger from "../models/StockLedger.js";
 import mongoose from "mongoose";
 
-// Create a new receipt (Draft)
 export const createReceipt = async (req, res) => {
   try {
     const { supplier, reference, items } = req.body;
-    // simple validation
+
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res
         .status(400)
@@ -25,7 +24,6 @@ export const createReceipt = async (req, res) => {
   }
 };
 
-// Get all receipts
 export const getReceipts = async (req, res) => {
   try {
     const receipts = await Receipt.find()
@@ -40,7 +38,6 @@ export const getReceipts = async (req, res) => {
   }
 };
 
-// Get one receipt
 export const getReceipt = async (req, res) => {
   try {
     const receipt = await Receipt.findById(req.params.id)
@@ -53,7 +50,6 @@ export const getReceipt = async (req, res) => {
   }
 };
 
-// Validate (confirm) a receipt -> increments product stock and writes ledger entries
 export const validateReceipt = async (req, res) => {
   const session = await mongoose.startSession();
   try {
@@ -65,13 +61,10 @@ export const validateReceipt = async (req, res) => {
     if (receipt.status !== "Draft")
       throw new Error("Only Draft receipts can be validated");
 
-    // For each item, increment product.stockByLocation[location]
     for (const item of receipt.items) {
       const prod = await Product.findById(item.product).session(session);
       if (!prod) throw new Error(`Product ${item.product} not found`);
 
-      // location is stored as ObjectId; but Product.stockByLocation uses location short name keys.
-      // We'll store stockByLocation keys using the Location._id string to keep it unique.
       const locKey = item.location.toString();
 
       const current = prod.stockByLocation.get(locKey) || 0;
@@ -80,7 +73,6 @@ export const validateReceipt = async (req, res) => {
 
       await prod.save({ session });
 
-      // create ledger entry
       await StockLedger.create(
         [
           {
@@ -97,7 +89,6 @@ export const validateReceipt = async (req, res) => {
       );
     }
 
-    // mark receipt as validated
     receipt.status = "Validated";
     receipt.validatedAt = new Date();
     receipt.validatedBy = req.user?._id || null;
@@ -121,7 +112,6 @@ export const validateReceipt = async (req, res) => {
   }
 };
 
-// Cancel a receipt (only Draft allowed)
 export const cancelReceipt = async (req, res) => {
   try {
     const receipt = await Receipt.findById(req.params.id);

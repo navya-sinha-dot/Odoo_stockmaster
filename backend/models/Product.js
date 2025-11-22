@@ -6,10 +6,8 @@ const productSchema = new mongoose.Schema({
   category: { type: String },
   uom: { type: String, default: "Units" },
 
-  // NEW: per unit cost
   cost: { type: Number, default: 0 },
 
-  // Stock stored per warehouse/location
   stockByLocation: {
     type: Map,
     of: Number,

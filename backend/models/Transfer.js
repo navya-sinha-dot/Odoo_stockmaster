@@ -21,7 +21,7 @@ const transferItemSchema = new mongoose.Schema({
 });
 
 const transferSchema = new mongoose.Schema({
-  reference: { type: String }, // e.g. TRF-001
+  reference: { type: String },
   items: [transferItemSchema],
   status: {
     type: String,

@@ -23,7 +23,6 @@ export const listLedger = async (req, res) => {
     if (product) filter.product = product;
     if (location) filter.location = location;
     if (ref) {
-      // allow searching by objectId (refId) or partial reference string in note
       if (mongoose.Types.ObjectId.isValid(ref)) filter.refId = ref;
       else filter.note = { $regex: ref, $options: "i" };
     }
@@ -93,7 +92,7 @@ export const groupedMoves = async (req, res) => {
           createdBy: 1,
         },
       },
-      // group by refId (if refId null, group by synthetic id using type+createdAt)
+
       {
         $group: {
           _id: {
@@ -121,7 +120,6 @@ export const groupedMoves = async (req, res) => {
 
     const grouped = await StockLedger.aggregate(pipeline);
 
-    // populate product/location inside each line
     const populated = await Promise.all(
       grouped.map(async (g) => {
         const lines = await Promise.all(
@@ -143,10 +141,6 @@ export const groupedMoves = async (req, res) => {
   }
 };
 
-/**
- * GET /api/ledger/:id
- * Return single ledger entry
- */
 export const getLedgerEntry = async (req, res) => {
   try {
     const entry = await StockLedger.findById(req.params.id)

@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.post("/", createReceipt); // create draft receipt
-router.get("/", getReceipts); // list receipts
-router.get("/:id", getReceipt); // get single receipt
-router.post("/:id/validate", validateReceipt); // validate receipt -> update stock
-router.post("/:id/cancel", cancelReceipt); // cancel
+router.post("/", createReceipt);
+router.get("/", getReceipts);
+router.get("/:id", getReceipt);
+router.post("/:id/validate", validateReceipt);
+router.post("/:id/cancel", cancelReceipt);
 
 export default router;

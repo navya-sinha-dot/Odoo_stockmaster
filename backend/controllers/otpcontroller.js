@@ -2,7 +2,6 @@ import User from "../models/user.js";
 import sendEmail from "../utils/sendEmail.js";
 import bcrypt from "bcryptjs";
 
-// 1) SEND OTP
 export const sendOTP = async (req, res) => {
   try {
     const { email } = req.body;
@@ -29,7 +28,6 @@ export const sendOTP = async (req, res) => {
   }
 };
 
-// 2) VERIFY OTP
 export const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -48,7 +46,6 @@ export const verifyOTP = async (req, res) => {
   }
 };
 
-// 3) RESET PASSWORD
 export const resetPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;

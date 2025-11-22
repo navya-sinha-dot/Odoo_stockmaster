@@ -16,8 +16,8 @@ const receiptItemSchema = new mongoose.Schema({
 });
 
 const receiptSchema = new mongoose.Schema({
-  supplier: { type: String }, // vendor name or id
-  reference: { type: String }, // optional ref code
+  supplier: { type: String },
+  reference: { type: String },
   items: [receiptItemSchema],
   status: {
     type: String,

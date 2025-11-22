@@ -3,7 +3,6 @@ import Product from "../models/Product.js";
 import StockLedger from "../models/StockLedger.js";
 import mongoose from "mongoose";
 
-// ---------- CREATE ADJUSTMENT (DRAFT) ----------
 export const createAdjustment = async (req, res) => {
   try {
     const { product, location, countedQty, note } = req.body;
@@ -30,7 +29,6 @@ export const createAdjustment = async (req, res) => {
   }
 };
 
-// ---------- GET ALL ADJUSTMENTS ----------
 export const getAdjustments = async (req, res) => {
   try {
     const data = await Adjustment.find()
@@ -44,7 +42,6 @@ export const getAdjustments = async (req, res) => {
   }
 };
 
-// ---------- VALIDATE ADJUSTMENT ----------
 export const validateAdjustment = async (req, res) => {
   const session = await mongoose.startSession();
   try {
@@ -60,18 +57,17 @@ export const validateAdjustment = async (req, res) => {
     const locKey = adj.location.toString();
     const current = product.stockByLocation.get(locKey) || 0;
 
-    const newQty = adj.countedQty; // replace system qty
+    const newQty = adj.countedQty;
     product.stockByLocation.set(locKey, newQty);
 
     await product.save({ session });
 
-    // Ledger entry
     await StockLedger.create(
       [
         {
           product: product._id,
           location: adj.location,
-          change: adj.difference, // positive or negative
+          change: adj.difference,
           type: "Adjustment",
           refId: adj._id,
           note: adj.note || "Stock adjustment",
@@ -102,7 +98,6 @@ export const validateAdjustment = async (req, res) => {
   }
 };
 
-// ---------- CANCEL ADJUSTMENT ----------
 export const cancelAdjustment = async (req, res) => {
   try {
     const adj = await Adjustment.findById(req.params.id);

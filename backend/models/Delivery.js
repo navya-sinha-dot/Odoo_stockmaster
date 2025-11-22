@@ -16,19 +16,17 @@ const deliveryItemSchema = new mongoose.Schema({
 });
 
 const deliverySchema = new mongoose.Schema({
-  // NEW FIELDS ⬇⬇⬇
   from: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Location",
     required: false,
   },
 
-  to: { type: String }, // customer name / destination
-  contact: { type: String }, // phone or person
-  scheduleDate: { type: Date }, // planned delivery date
-  // NEW FIELDS END ⬆⬆⬆
+  to: { type: String },
+  contact: { type: String },
+  scheduleDate: { type: Date },
 
-  customer: { type: String }, // legacy, optional
+  customer: { type: String },
   reference: { type: String },
   items: [deliveryItemSchema],
 
