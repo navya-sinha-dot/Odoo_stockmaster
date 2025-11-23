@@ -193,19 +193,22 @@ All operations are logged in the **Stock Ledger**.
 
 # Folder Structure
 
+<pre>
 StockMaster/
 │── frontend/
-│ ├── components/
-│ ├── pages/
-│ ├── context/
-│ └── api.js
+│   ├── components/
+│   ├── pages/
+│   ├── context/
+│   └── api.js
 │
 └── backend/
-├── models/
-├── routes/
-├── controllers/
-├── middleware/
-└── server.js
+    ├── models/
+    ├── routes/
+    ├── controllers/
+    ├── middleware/
+    └── server.js
+</pre>
+
 
 
 ---
