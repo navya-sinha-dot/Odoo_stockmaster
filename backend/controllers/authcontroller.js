@@ -20,7 +20,6 @@ export const register = async (req, res) => {
       return res.status(400).json({ msg: "Login ID already exists" });
     }
 
-    // Password strength
     const strongPassword =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
-import logo from "../../assets/logo2.jpg"; // LOGO
+import logo from "../../assets/logo2.jpg";
 
 export default function Signup() {
   const [loginId, setLoginId] = useState("");
@@ -10,7 +10,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [msg, setMsg] = useState(null);
-  const [loading, setLoading] = useState(false); // NEW
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export default function Signup() {
       navigate("/auth/login");
     } catch (err) {
       setMsg(err.response?.data?.msg || "Signup failed");
-      setLoading(false); // stop loader on failure
+      setLoading(false);
     }
   };
 
@@ -40,7 +40,6 @@ export default function Signup() {
       className="min-h-screen flex flex-col items-center justify-center px-4"
       style={{ background: "#f2f8ff" }}
     >
-      {/* Back to Home */}
       <div className="w-full max-w-md mb-2">
         <Link
           to="/"
@@ -62,7 +61,7 @@ export default function Signup() {
             <img
               src={logo}
               alt="Logo"
-              className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              className="h-25 w-auto cursor-pointer"
               style={{ objectFit: "contain" }}
             />
           </Link>
@@ -81,7 +80,6 @@ export default function Signup() {
         <form onSubmit={submit} className="space-y-4">
           {msg && <div className="text-red-500 text-sm text-center">{msg}</div>}
 
-          {/* Login ID */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Login ID
@@ -99,7 +97,6 @@ export default function Signup() {
             />
           </div>
 
-          {/* Email */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Email ID
@@ -117,7 +114,6 @@ export default function Signup() {
             />
           </div>
 
-          {/* Password */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Password
@@ -135,7 +131,6 @@ export default function Signup() {
             />
           </div>
 
-          {/* Re-enter Password */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Re-enter Password
@@ -153,7 +148,6 @@ export default function Signup() {
             />
           </div>
 
-          {/* Signup Button with Loader */}
           <button
             type="submit"
             disabled={loading}

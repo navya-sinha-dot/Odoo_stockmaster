@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
-import logo from "../../assets/logo2.jpg"; // LOGO
+import logo from "../../assets/logo2.jpg";
 
-// ---------- FULL SCREEN LOADER ----------
 function FullScreenLoader() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-50">
@@ -27,7 +26,6 @@ function FullScreenLoader() {
     </div>
   );
 }
-// ----------------------------------------
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -39,7 +37,7 @@ export default function ResetPassword() {
   const [loadingVerify, setLoadingVerify] = useState(false);
   const [loadingReset, setLoadingReset] = useState(false);
 
-  const [showRedirectLoader, setShowRedirectLoader] = useState(false); // NEW
+  const [showRedirectLoader, setShowRedirectLoader] = useState(false);
 
   const navigate = useNavigate();
 
@@ -66,8 +64,6 @@ export default function ResetPassword() {
       await api.post("/otp/reset", { email, newPassword });
 
       setMsg("Password reset successfully!");
-
-      // Show loader for 2 sec before redirect
       setShowRedirectLoader(true);
 
       setTimeout(() => {
@@ -99,7 +95,7 @@ export default function ResetPassword() {
               <img
                 src={logo}
                 alt="Logo"
-                className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+                className="h-25 w-auto cursor-pointer"
                 style={{ objectFit: "contain" }}
               />
             </Link>
@@ -178,7 +174,6 @@ export default function ResetPassword() {
             </div>
           </div>
 
-          {/* NEW PASSWORD (Shown only if OTP verified) */}
           {verified && (
             <div>
               <div className="space-y-1 mb-4">
@@ -217,7 +212,6 @@ export default function ResetPassword() {
             </div>
           )}
 
-          {/* Links */}
           <div className="text-center text-sm mt-4">
             <Link to="/auth/login" style={{ color: "#53629E" }}>
               Back to Login

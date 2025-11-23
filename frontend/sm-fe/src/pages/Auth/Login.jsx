@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
 import AuthContext from "../../context/AuthContext";
-import logo from "../../assets/logo2.jpg"; // LOGO
+import logo from "../../assets/logo2.jpg";
 export default function Login() {
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // NEW
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -20,12 +20,11 @@ export default function Login() {
 
     try {
       const res = await api.post("/auth/login", { loginId, password });
-
       login(res.data.user, res.data.token);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.msg || "Invalid login credentials");
-      setLoading(false); // stop loader on failure
+      setLoading(false);
     }
   };
 
@@ -56,7 +55,7 @@ export default function Login() {
             <img
               src={logo}
               alt="Logo"
-              className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              className="h-25 w-auto cursor-pointer"
               style={{ objectFit: "contain" }}
             />
           </Link>
@@ -77,7 +76,6 @@ export default function Login() {
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
-          {/* Login ID */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Login ID
@@ -95,7 +93,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Password */}
           <div className="space-y-1">
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Password
@@ -113,7 +110,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Login Button with Loader */}
           <button
             type="submit"
             disabled={loading}
@@ -129,7 +125,6 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Links */}
         <div className="text-center text-sm mt-4">
           <Link to="/auth/forgot" style={{ color: "#53629E" }}>
             Forgot Password?

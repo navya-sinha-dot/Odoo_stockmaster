@@ -8,7 +8,7 @@ import api from "../../api";
 export default function DeliveryList() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
-  const [view, setView] = useState("list"); // list | kanban
+  const [view, setView] = useState("list");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,7 +61,6 @@ export default function DeliveryList() {
         className="mx-auto mt-10 p-8 rounded-3xl bg-white border shadow-md"
         style={{ width: "92%", borderColor: "#473472" }}
       >
-        {/* TOP BAR */}
         <div className="flex justify-between items-center mb-4">
           <Link
             to="/delivery/new"
@@ -102,7 +101,6 @@ export default function DeliveryList() {
           </div>
         </div>
 
-        {/* LIST VIEW */}
         {view === "list" && (
           <table className="w-full text-sm">
             <thead>
@@ -166,7 +164,6 @@ export default function DeliveryList() {
           </table>
         )}
 
-        {/* KANBAN VIEW */}
         {view === "kanban" && (
           <div className="grid grid-cols-5 gap-4 mt-6">
             {["Draft", "Waiting", "Ready", "Done", "Canceled"].map((col) => (

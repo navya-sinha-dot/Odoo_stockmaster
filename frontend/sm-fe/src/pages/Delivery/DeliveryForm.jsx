@@ -115,7 +115,6 @@ export default function DeliveryForm() {
     }
   };
 
-  // LOCAL check per-line by fetching product current stock
   const localCheckStock = async () => {
     if (!delivery.items || delivery.items.length === 0) {
       alert("Add at least one item first");
@@ -131,15 +130,14 @@ export default function DeliveryForm() {
       try {
         const p = await api.get(`/products/${it.product}`);
         const prod = p.data;
-        // product.stockByLocation might be an object or Map on server; adapt:
+
         const stockMap = prod.stockByLocation || prod.stock_by_location || {};
-        // if Map-like, it might be an object of ids -> numbers
+
         const avail = stockMap[it.location] ?? stockMap.get?.(it.location) ?? 0;
         if (avail < (it.quantity || 0)) {
           insuff[i] = { available: avail, required: it.quantity || 0 };
         }
       } catch (err) {
-        // on error, mark insufficient
         insuff[i] = { available: 0, required: it.quantity || 0 };
       }
     }
@@ -147,13 +145,10 @@ export default function DeliveryForm() {
     return insuff;
   };
 
-  // CALL backend to set Waiting/Ready based on current stock (it also sets delivery.status)
   const checkStock = async () => {
     if (!id) return alert("Save draft first to run stock check");
     try {
-      // First do local check to display line-level warnings
       await localCheckStock();
-      // Backend will compute and set status accordingly
       const res = await api.post(`/deliveries/${id}/check-stock`);
       setDelivery((prev) => ({
         ...prev,
@@ -168,7 +163,6 @@ export default function DeliveryForm() {
     }
   };
 
-  // VALIDATE (only allowed when backend status is Ready)
   const validateDelivery = async () => {
     if (!id) return alert("Save draft first");
     if (delivery.status !== "Ready") {
@@ -207,7 +201,6 @@ export default function DeliveryForm() {
         </h1>
 
         <div className="bg-white p-6 rounded-xl border shadow">
-          {/* header */}
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label className="font-medium">From (Warehouse)</label>
@@ -284,7 +277,6 @@ export default function DeliveryForm() {
             </div>
           </div>
 
-          {/* items */}
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-semibold" style={{ color: "#473472" }}>
               Delivery Items
@@ -397,7 +389,6 @@ export default function DeliveryForm() {
             </tbody>
           </table>
 
-          {/* notes */}
           <label className="font-medium">Notes</label>
           <textarea
             className="w-full border p-2 rounded mb-6"
@@ -406,7 +397,6 @@ export default function DeliveryForm() {
             placeholder="Optional note..."
           />
 
-          {/* actions */}
           <div className="flex gap-4">
             <button
               disabled={loading}

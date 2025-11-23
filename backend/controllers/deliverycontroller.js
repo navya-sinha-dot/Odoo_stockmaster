@@ -3,7 +3,6 @@ import Product from "../models/Product.js";
 import StockLedger from "../models/StockLedger.js";
 import mongoose from "mongoose";
 
-// CREATE DELIVERY
 export const createDelivery = async (req, res) => {
   try {
     const { from, to, contact, scheduleDate, customer, items } = req.body;
@@ -35,7 +34,6 @@ export const createDelivery = async (req, res) => {
   }
 };
 
-// GET LIST OF DELIVERIES
 export const getDeliveries = async (req, res) => {
   try {
     const data = await Delivery.find()
@@ -49,7 +47,6 @@ export const getDeliveries = async (req, res) => {
   }
 };
 
-// GET SINGLE DELIVERY
 export const getDelivery = async (req, res) => {
   try {
     const delivery = await Delivery.findById(req.params.id)
@@ -64,7 +61,6 @@ export const getDelivery = async (req, res) => {
   }
 };
 
-// CHECK STOCK + MOVE TO WAITING/READY
 export const checkStock = async (req, res) => {
   try {
     const delivery = await Delivery.findById(req.params.id);
@@ -96,7 +92,6 @@ export const checkStock = async (req, res) => {
   }
 };
 
-// VALIDATE → DONE + STOCK REDUCE
 export const validateDelivery = async (req, res) => {
   const session = await mongoose.startSession();
   try {
@@ -108,7 +103,6 @@ export const validateDelivery = async (req, res) => {
     if (delivery.status !== "Ready")
       throw new Error("Only Ready deliveries can be validated");
 
-    // Stock deduction
     for (const item of delivery.items) {
       const product = await Product.findById(item.product).session(session);
       const locKey = item.location.toString();
@@ -157,7 +151,6 @@ export const validateDelivery = async (req, res) => {
   }
 };
 
-// CANCEL
 export const cancelDelivery = async (req, res) => {
   try {
     const delivery = await Delivery.findById(req.params.id);

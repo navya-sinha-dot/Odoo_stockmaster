@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../../api";
-import logo from "../../assets/logo2.jpg"; // LOGO
+import logo from "../../assets/logo2.jpg";
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState(null);
-  const [loading, setLoading] = useState(false); // NEW
+  const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -33,13 +33,12 @@ export default function ForgotPassword() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white rounded-xl shadow p-8 border border-gray-200"
       >
-        {/* Logo */}
         <div className="flex justify-center mb-6">
           <Link to="/">
             <img
               src={logo}
               alt="Logo"
-              className="h-25 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              className="h-25 w-auto cursor-pointer"
               style={{ objectFit: "contain" }}
             />
           </Link>
@@ -55,7 +54,6 @@ export default function ForgotPassword() {
           Enter your email to receive an OTP
         </p>
 
-        {/* Form */}
         <form onSubmit={submit} className="space-y-4">
           {msg && (
             <div
@@ -84,7 +82,6 @@ export default function ForgotPassword() {
             />
           </div>
 
-          {/* Button with Loader */}
           <button
             type="submit"
             disabled={loading}
@@ -100,7 +97,6 @@ export default function ForgotPassword() {
           </button>
         </form>
 
-        {/* Links */}
         <div className="text-center text-sm mt-4">
           <Link to="/auth/login" style={{ color: "#53629E" }}>
             Back to Login

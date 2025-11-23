@@ -1,6 +1,5 @@
 import Warehouse from "../models/Warehouse.js";
 
-// CREATE WAREHOUSE
 export const createWarehouse = async (req, res) => {
   try {
     const { name, shortCode, address } = req.body;
@@ -17,7 +16,6 @@ export const createWarehouse = async (req, res) => {
   }
 };
 
-// GET ALL WAREHOUSES
 export const getWarehouses = async (req, res) => {
   try {
     const warehouses = await Warehouse.find();
@@ -27,7 +25,6 @@ export const getWarehouses = async (req, res) => {
   }
 };
 
-// GET ONE WAREHOUSE
 export const getWarehouse = async (req, res) => {
   try {
     const warehouse = await Warehouse.findById(req.params.id);
@@ -39,7 +36,6 @@ export const getWarehouse = async (req, res) => {
   }
 };
 
-// UPDATE WAREHOUSE
 export const updateWarehouse = async (req, res) => {
   try {
     const warehouse = await Warehouse.findByIdAndUpdate(
@@ -54,7 +50,6 @@ export const updateWarehouse = async (req, res) => {
   }
 };
 
-// DELETE WAREHOUSE
 export const deleteWarehouse = async (req, res) => {
   try {
     await Warehouse.findByIdAndDelete(req.params.id);
