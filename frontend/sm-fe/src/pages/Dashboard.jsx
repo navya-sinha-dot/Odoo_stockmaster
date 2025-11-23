@@ -60,7 +60,6 @@ export default function Dashboard() {
       return total < 10;
     }).length;
 
-    // Latest 3 transfers
     const transfers = ledger
       .filter((l) => l.type === "Transfer")
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -80,7 +79,6 @@ export default function Dashboard() {
     <div className="min-h-screen" style={{ background: "#f2f8ff" }}>
       <TopNavDashboard />
 
-      {/* PAGE TITLE */}
       <h1
         className="text-4xl font-bold text-center mt-10 mb-12"
         style={{ color: "#473472" }}

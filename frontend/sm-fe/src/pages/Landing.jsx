@@ -30,19 +30,11 @@ export default function Landing() {
 
           <div className="flex gap-4">
             <a
-              href="/auth/signup"
+              href="https://github.com/navya-sinha-dot/Odoo_stockmaster"
               className="px-6 py-3 rounded-lg text-white text-lg font-semibold"
               style={{ background: "#473472" }}
             >
-              Get Started
-            </a>
-
-            <a
-              href="/auth/login"
-              className="px-6 py-3 rounded-lg text-lg font-semibold border"
-              style={{ borderColor: "#473472", color: "#473472" }}
-            >
-              Sign In
+              GitHub
             </a>
           </div>
         </motion.div>
