@@ -30,19 +30,15 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* PUBLIC LANDING PAGE */}
         <Route path="/" element={<Landing />} />
 
-        {/* AUTH ROUTES */}
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot" element={<ForgotPassword />} />
         <Route path="/auth/reset" element={<ResetPassword />} />
 
-        {/* PROTECTED ROUTES */}
         <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* RECEIPTS */}
         <Route
           path="/receipts"
           element={
@@ -70,7 +66,6 @@ export default function App() {
           }
         />
 
-        {/* PRODUCTS */}
         <Route path="/stock" element={<Stock />} />
         <Route
           path="/products/new"
@@ -81,7 +76,6 @@ export default function App() {
           }
         />
 
-        {/* WAREHOUSES + LOCATIONS */}
         <Route
           path="/warehouses"
           element={
@@ -100,10 +94,8 @@ export default function App() {
           }
         />
 
-        {/* MOVE HISTORY */}
         <Route path="/move-history" element={<MoveHistory />} />
 
-        {/* DELIVERY */}
         <Route
           path="/delivery"
           element={
@@ -131,7 +123,6 @@ export default function App() {
           }
         />
 
-        {/* ADJUSTMENT */}
         <Route path="/adjustments" element={<Adjustments />} />
       </Routes>
     </AuthProvider>
