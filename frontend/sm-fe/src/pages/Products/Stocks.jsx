@@ -33,12 +33,10 @@ export default function Stock() {
     <div className="min-h-screen" style={{ background: "#f2f8ff" }}>
       <TopNavDashboard />
 
-      {/* Header Note */}
       <div className="text-center mt-4 text-sm" style={{ color: "#53629E" }}>
         This page contains the warehouse details & location.
       </div>
 
-      {/* Rounded Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -48,13 +46,11 @@ export default function Stock() {
           borderColor: "#473472",
         }}
       >
-        {/* Title Row */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold" style={{ color: "#473472" }}>
             Stock
           </h1>
 
-          {/* NEW PRODUCT BUTTON */}
           <Link
             to="/products/new"
             className="px-5 py-2 rounded-lg border font-semibold"
@@ -64,7 +60,6 @@ export default function Stock() {
           </Link>
         </div>
 
-        {/* Search */}
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-2">
             <input
@@ -79,7 +74,6 @@ export default function Stock() {
           </div>
         </div>
 
-        {/* Table */}
         <table className="w-full text-sm">
           <thead>
             <tr style={{ color: "#473472", borderBottom: "2px solid #473472" }}>
@@ -94,20 +88,15 @@ export default function Stock() {
             {filtered.map((p) => (
               <React.Fragment key={p._id}>
                 <tr className="border-t">
-                  {/* Product Name */}
                   <td className="py-3">{p.name}</td>
 
-                  {/* Cost */}
                   <td>₹ {p.cost || 0}</td>
 
-                  {/* Total stock */}
                   <td>{totalStock(p)}</td>
 
-                  {/* Free to use */}
                   <td>{totalStock(p)}</td>
                 </tr>
 
-                {/* dotted separator line */}
                 <tr>
                   <td colSpan="4">
                     <div

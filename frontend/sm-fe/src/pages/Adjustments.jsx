@@ -16,7 +16,6 @@ export default function Adjustments() {
 
   const [loading, setLoading] = useState(false);
 
-  // ------------------ LOAD INITIAL DATA ------------------
   useEffect(() => {
     loadAdjustments();
     loadProducts();
@@ -38,7 +37,6 @@ export default function Adjustments() {
     setLocations(res.data);
   };
 
-  // ------------------ CREATE ADJUSTMENT ------------------
   const createAdjustment = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -55,7 +53,6 @@ export default function Adjustments() {
     setLoading(false);
   };
 
-  // ------------------ VALIDATE ------------------
   const validateAdjustment = async (id) => {
     if (!window.confirm("Validate this adjustment?")) return;
 
@@ -67,7 +64,6 @@ export default function Adjustments() {
     }
   };
 
-  // ------------------ CANCEL ------------------
   const cancelAdjustment = async (id) => {
     if (!window.confirm("Cancel this adjustment?")) return;
 
@@ -88,7 +84,6 @@ export default function Adjustments() {
           Stock Adjustments
         </h1>
 
-        {/* ------------------ CREATE FORM ------------------ */}
         <form
           onSubmit={createAdjustment}
           className="bg-white p-6 rounded-xl shadow max-w-xl mb-10 border border-gray-200"
@@ -100,7 +95,6 @@ export default function Adjustments() {
             Create Adjustment
           </h2>
 
-          {/* PRODUCT */}
           <label className="text-sm font-semibold">Product</label>
           <select
             className="w-full p-2 border rounded mb-3"
@@ -116,7 +110,6 @@ export default function Adjustments() {
             ))}
           </select>
 
-          {/* LOCATION */}
           <label className="text-sm font-semibold">Location</label>
           <select
             className="w-full p-2 border rounded mb-3"
@@ -132,7 +125,6 @@ export default function Adjustments() {
             ))}
           </select>
 
-          {/* COUNTED QTY */}
           <label className="text-sm font-semibold">Counted Quantity</label>
           <input
             type="number"
@@ -142,7 +134,6 @@ export default function Adjustments() {
             required
           />
 
-          {/* NOTE */}
           <label className="text-sm font-semibold">Note (optional)</label>
           <textarea
             className="w-full p-2 border rounded mb-3"
@@ -160,7 +151,6 @@ export default function Adjustments() {
           </button>
         </form>
 
-        {/* ------------------ TABLE ------------------ */}
         <div className="bg-white p-6 rounded-xl shadow border border-gray-200">
           <h2
             className="text-xl font-semibold mb-4"

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import OperationsPopup from "./Opeartionspopup";
 import SettingsPopup from "./SettingsPopup";
 import AuthContext from "../context/AuthContext";
-import logo from "../assets/logo2.jpg"; // LOGO
+import logo from "../assets/logo2.jpg";
 
 export default function TopNavDashboard() {
   const [openOps, setOpenOps] = useState(false);
@@ -13,19 +13,16 @@ export default function TopNavDashboard() {
 
   return (
     <>
-      {/* TOP NAVBAR */}
       <div
         className="w-full bg-white shadow-sm py-4 px-10 flex items-center justify-between"
         style={{ borderBottom: "2px solid #473472" }}
       >
-        {/* LEFT NAV LINKS */}
         <div className="flex items-center gap-8 text-lg font-semibold">
-          {/* LOGO — FIXED HEIGHT */}
           <Link to="/">
             <img
               src={logo}
               alt="Logo"
-              className="h-14 w-auto cursor-pointer" // <-- FIXED HEIGHT
+              className="h-14 w-auto cursor-pointer"
               style={{ objectFit: "contain" }}
             />
           </Link>
@@ -54,7 +51,6 @@ export default function TopNavDashboard() {
           </button>
         </div>
 
-        {/* RIGHT SIDE USER + LOGOUT */}
         <div className="flex items-center gap-5">
           {user && (
             <span className="font-medium" style={{ color: "#473472" }}>

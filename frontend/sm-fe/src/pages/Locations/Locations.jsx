@@ -48,12 +48,10 @@ export default function Locations() {
 
   return (
     <div className="p-6">
-      {/* Title */}
       <h1 className="text-2xl font-bold mb-6" style={{ color: "#473472" }}>
         Locations
       </h1>
 
-      {/* CREATE NEW LOCATION */}
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
@@ -104,7 +102,6 @@ export default function Locations() {
         </button>
       </motion.div>
 
-      {/* LOCATIONS LIST */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

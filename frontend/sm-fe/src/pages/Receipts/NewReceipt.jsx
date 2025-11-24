@@ -64,7 +64,6 @@ export default function NewReceipt() {
 
   return (
     <div className="p-6">
-      {/* Page Title */}
       <h1 className="text-2xl font-bold mb-6" style={{ color: "#473472" }}>
         New Receipt
       </h1>
@@ -75,7 +74,6 @@ export default function NewReceipt() {
         className="bg-white p-6 rounded-lg shadow border border-gray-200"
       >
         <div className="space-y-4">
-          {/* Supplier Field */}
           <div>
             <label className="text-sm font-medium" style={{ color: "#53629E" }}>
               Supplier Name
@@ -105,7 +103,6 @@ export default function NewReceipt() {
                 key={index}
                 className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"
               >
-                {/* Product */}
                 <select
                   value={line.product}
                   onChange={(e) => updateLine(index, "product", e.target.value)}
@@ -123,7 +120,6 @@ export default function NewReceipt() {
                   ))}
                 </select>
 
-                {/* Quantity */}
                 <input
                   type="number"
                   value={line.quantity}
@@ -138,7 +134,6 @@ export default function NewReceipt() {
                   }}
                 />
 
-                {/* Location */}
                 <select
                   value={line.location}
                   onChange={(e) =>

@@ -7,13 +7,11 @@ export default function SettingsPopup({ open, onClose }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      {/* Background dim and blur */}
       <div
         className="absolute inset-0 backdrop-blur-md bg-transparent"
         onClick={onClose}
       />
 
-      {/* Popup Box */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -27,7 +25,6 @@ export default function SettingsPopup({ open, onClose }) {
           Settings
         </h2>
 
-        {/* Menu Items */}
         <div className="flex flex-col gap-4">
           <Link
             to="/warehouses"
@@ -54,7 +51,6 @@ export default function SettingsPopup({ open, onClose }) {
           </Link>
         </div>
 
-        {/* Close Icon */}
         <button
           onClick={onClose}
           className="absolute top-3 right-4 text-lg font-bold"

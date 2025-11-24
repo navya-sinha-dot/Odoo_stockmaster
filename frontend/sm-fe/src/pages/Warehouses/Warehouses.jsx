@@ -46,7 +46,6 @@ export default function Warehouses() {
         Warehouses
       </h1>
 
-      {/* CREATE NEW WAREHOUSE FORM */}
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
@@ -91,7 +90,6 @@ export default function Warehouses() {
         </button>
       </motion.div>
 
-      {/* LIST OF WAREHOUSES */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

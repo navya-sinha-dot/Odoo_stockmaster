@@ -13,7 +13,6 @@ export default function MoveHistory() {
     load();
   }, []);
 
-  // Extract reference from note → e.g. "(REF-001)"
   const extractRef = (note) => {
     const match = note?.match(/\((.*?)\)/);
     return match ? match[1] : "—";
@@ -23,7 +22,6 @@ export default function MoveHistory() {
     try {
       const res = await api.get("/ledger");
 
-      // backend returns: { items: [...] }
       const lines = res.data.items || [];
 
       const rows = lines.map((line) => {
@@ -31,20 +29,13 @@ export default function MoveHistory() {
         let from = "—";
         let to = "—";
 
-        // RECEIPT → IN
         if (line.type === "Receipt") {
           status = "IN";
           to = line.location?.name || "—";
-        }
-
-        // DELIVERY → OUT
-        else if (line.type === "Delivery") {
+        } else if (line.type === "Delivery") {
           status = "OUT";
           from = line.location?.name || "—";
-        }
-
-        // TRANSFERS (2 rows per transfer: IN and OUT)
-        else if (line.type === "Transfer") {
+        } else if (line.type === "Transfer") {
           if (line.change > 0) {
             status = "IN";
             to = line.location?.name || "—";
@@ -55,7 +46,7 @@ export default function MoveHistory() {
         }
 
         return {
-          reference: extractRef(line.note), // FIXED
+          reference: extractRef(line.note),
           date: line.createdAt,
           product: line.product?.name || "",
           from,
@@ -71,7 +62,6 @@ export default function MoveHistory() {
     }
   };
 
-  // Search filter
   const filtered = items.filter((r) =>
     [r.reference, r.product, r.from, r.to, r.status]
       .join(" ")
@@ -83,7 +73,6 @@ export default function MoveHistory() {
     <div className="min-h-screen" style={{ background: "#f2f8ff" }}>
       <TopNavDashboard />
 
-      {/* TITLE */}
       <h1
         className="text-4xl font-bold text-center mt-10"
         style={{ color: "#473472" }}
@@ -91,14 +80,12 @@ export default function MoveHistory() {
         Move History
       </h1>
 
-      {/* MAIN CARD */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         className="mx-auto mt-10 p-8 rounded-3xl bg-white border shadow-md"
         style={{ width: "92%", borderColor: "#473472" }}
       >
-        {/* TOP BAR */}
         <div className="flex justify-between items-center mb-4">
           <button
             className="px-6 py-2 rounded-lg border font-semibold"
@@ -108,7 +95,6 @@ export default function MoveHistory() {
           </button>
 
           <div className="flex items-center gap-4">
-            {/* Search */}
             <div className="flex items-center gap-2">
               <input
                 value={search}
@@ -125,7 +111,6 @@ export default function MoveHistory() {
           </div>
         </div>
 
-        {/* TABLE */}
         <table className="w-full text-sm">
           <thead>
             <tr
@@ -164,7 +149,6 @@ export default function MoveHistory() {
                   <td className="p-3">{row.from}</td>
                   <td className="p-3">{row.to}</td>
 
-                  {/* Quantity with color */}
                   <td
                     className="p-3 font-semibold"
                     style={{ color: row.quantity > 0 ? "green" : "red" }}
@@ -172,7 +156,6 @@ export default function MoveHistory() {
                     {row.quantity}
                   </td>
 
-                  {/* Status with color */}
                   <td
                     className="p-3 font-semibold"
                     style={{
@@ -192,7 +175,6 @@ export default function MoveHistory() {
           </tbody>
         </table>
 
-        {/* NOTES */}
         <div
           className="mt-10 text-gray-700"
           style={{ fontFamily: "handwriting, sans-serif" }}
