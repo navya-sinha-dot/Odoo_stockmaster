@@ -38,12 +38,12 @@ export default function CreateProduct() {
   };
 
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold mb-6" style={{ color: "#473472" }}>
+    <div className="p-4 sm:p-6 md:p-10">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6" style={{ color: "#473472" }}>
         Create Product
       </h1>
 
-      <div className="bg-white p-6 rounded-xl border shadow max-w-xl">
+      <div className="bg-white p-4 sm:p-6 rounded-xl border shadow max-w-xl">
         <form onSubmit={submitProduct} className="space-y-4">
           <div>
             <label className="font-medium">Product Name</label>

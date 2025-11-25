@@ -15,7 +15,7 @@ export default function OperationsPopup({ open, onClose }) {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="relative bg-white rounded-2xl shadow-xl p-8 z-50 w-[350px]"
+        className="relative bg-white rounded-2xl shadow-xl p-6 sm:p-8 z-50 w-[90%] max-w-[350px] mx-4"
         style={{ border: "2px solid #473472" }}
       >
         <h2

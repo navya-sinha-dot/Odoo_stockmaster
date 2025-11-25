@@ -53,7 +53,7 @@ export default function Signup() {
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white rounded-xl shadow p-8 border border-gray-200"
+        className="w-full max-w-md bg-white rounded-xl shadow p-6 sm:p-8 border border-gray-200"
       >
         {/* Logo */}
         <div className="flex justify-center">
@@ -61,19 +61,19 @@ export default function Signup() {
             <img
               src={logo}
               alt="Logo"
-              className="h-25 w-auto cursor-pointer"
+              className="h-20 sm:h-25 w-auto cursor-pointer"
               style={{ objectFit: "contain" }}
             />
           </Link>
         </div>
 
         <h2
-          className="text-center text-2xl font-bold mb-1"
+          className="text-center text-xl sm:text-2xl font-bold mb-1"
           style={{ color: "#473472" }}
         >
           Create Account
         </h2>
-        <p className="text-center text-gray-500 mb-6 text-sm">
+        <p className="text-center text-gray-500 mb-6 text-xs sm:text-sm">
           Sign up to access StockMaster
         </p>
 

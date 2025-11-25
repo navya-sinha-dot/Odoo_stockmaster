@@ -40,20 +40,21 @@ export default function Stock() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto mt-6 p-8 rounded-3xl bg-white border shadow-md"
+        className="mx-auto mt-4 sm:mt-6 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-white border shadow-md"
         style={{
-          width: "92%",
+          width: "95%",
+          maxWidth: "100%",
           borderColor: "#473472",
         }}
       >
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold" style={{ color: "#473472" }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold" style={{ color: "#473472" }}>
             Stock
           </h1>
 
           <Link
             to="/products/new"
-            className="px-5 py-2 rounded-lg border font-semibold"
+            className="px-4 sm:px-5 py-2 rounded-lg border font-semibold text-sm sm:text-base whitespace-nowrap"
             style={{ borderColor: "#473472", color: "#473472" }}
           >
             NEW PRODUCT
@@ -61,20 +62,21 @@ export default function Stock() {
         </div>
 
         <div className="flex justify-end mb-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <input
               type="text"
               placeholder="Search product..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-3 py-1 border rounded-md text-sm outline-none"
+              className="px-3 py-1 border rounded-md text-xs sm:text-sm outline-none flex-1 sm:flex-none"
               style={{ borderColor: "#53629E" }}
             />
-            <FiSearch size={20} style={{ color: "#473472" }} />
+            <FiSearch className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "#473472" }} />
           </div>
         </div>
 
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs sm:text-sm min-w-[500px]">
           <thead>
             <tr style={{ color: "#473472", borderBottom: "2px solid #473472" }}>
               <th className="text-left pb-2">Product</th>
@@ -116,8 +118,7 @@ export default function Stock() {
 
         {/* Footer Note */}
         <div
-          className="text-center mt-16 text-gray-600"
-          style={{ fontSize: "1rem" }}
+          className="text-center mt-8 sm:mt-16 text-gray-600 text-sm sm:text-base"
         >
           User must be able to update the stock from here.
         </div>

@@ -39,7 +39,6 @@ export default function Landing() {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE ILLUSTRATION */}
         <motion.div
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}

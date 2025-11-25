@@ -79,14 +79,14 @@ export default function Adjustments() {
     <>
       <TopNavDashboard />
 
-      <div className="p-10">
-        <h1 className="text-2xl font-bold mb-6" style={{ color: "#473472" }}>
+      <div className="p-4 sm:p-6 md:p-10">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" style={{ color: "#473472" }}>
           Stock Adjustments
         </h1>
 
         <form
           onSubmit={createAdjustment}
-          className="bg-white p-6 rounded-xl shadow max-w-xl mb-10 border border-gray-200"
+          className="bg-white p-4 sm:p-6 rounded-xl shadow max-w-xl mb-6 sm:mb-10 border border-gray-200"
         >
           <h2
             className="text-xl font-semibold mb-4"
@@ -151,15 +151,15 @@ export default function Adjustments() {
           </button>
         </form>
 
-        <div className="bg-white p-6 rounded-xl shadow border border-gray-200">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow border border-gray-200 overflow-x-auto">
           <h2
-            className="text-xl font-semibold mb-4"
+            className="text-lg sm:text-xl font-semibold mb-4"
             style={{ color: "#473472" }}
           >
             All Adjustments
           </h2>
 
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[600px]">
             <thead>
               <tr style={{ borderBottom: "2px solid #473472" }}>
                 <th className="p-2">Product</th>

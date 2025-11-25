@@ -106,19 +106,19 @@ export default function ReceiptForm() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto mt-8 p-8 rounded-3xl bg-white border shadow-md"
-        style={{ width: "92%", borderColor: "#473472" }}
+        className="mx-auto mt-4 sm:mt-6 md:mt-8 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-white border shadow-md"
+        style={{ width: "95%", maxWidth: "100%", borderColor: "#473472" }}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
           <button
             onClick={() => navigate("/receipts")}
-            className="px-4 py-2 border rounded"
+            className="px-3 sm:px-4 py-2 border rounded text-sm sm:text-base"
             style={{ borderColor: "#473472", color: "#473472" }}
           >
             Back
           </button>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={() => window.print()}
               className="px-4 py-2 border rounded"
@@ -148,12 +148,12 @@ export default function ReceiptForm() {
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mb-6" style={{ color: "#473472" }}>
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" style={{ color: "#473472" }}>
           {isNew ? "New Receipt" : `Receipt ${reference}`}
         </h2>
 
         {/* HEADER DETAILS */}
-        <div className="grid grid-cols-2 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-10">
           <div>
             <label className="block text-sm mb-1">
               Receive From (Supplier)
@@ -187,15 +187,15 @@ export default function ReceiptForm() {
           </div>
         </div>
 
-        <h3 className="font-semibold mb-2">Products</h3>
+        <h3 className="font-semibold mb-2 text-sm sm:text-base">Products</h3>
 
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border rounded-lg overflow-hidden overflow-x-auto">
           {items.map((row, i) => (
             <div
               key={i}
-              className="grid grid-cols-12 gap-4 items-center p-4 border-b"
+              className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center p-3 sm:p-4 border-b"
             >
-              <div className="col-span-6">
+              <div className="col-span-1 sm:col-span-6">
                 <select
                   className="w-full border p-2 rounded"
                   value={row.product}
@@ -210,17 +210,17 @@ export default function ReceiptForm() {
                 </select>
               </div>
 
-              <div className="col-span-3">
+              <div className="col-span-1 sm:col-span-3">
                 <input
                   type="number"
-                  className="w-full border p-2 rounded"
+                  className="w-full border p-2 rounded text-sm sm:text-base"
                   value={row.quantity}
                   min="1"
                   onChange={(e) => updateLine(i, "quantity", e.target.value)}
                 />
               </div>
 
-              <div className="col-span-3">
+              <div className="col-span-1 sm:col-span-3">
                 <select
                   className="w-full border p-2 rounded"
                   value={row.location}

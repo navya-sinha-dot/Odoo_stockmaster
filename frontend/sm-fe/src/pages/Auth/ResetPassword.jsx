@@ -87,22 +87,22 @@ export default function ResetPassword() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-white rounded-xl shadow p-8 border border-gray-200"
+          className="w-full max-w-md bg-white rounded-xl shadow p-6 sm:p-8 border border-gray-200"
         >
           {/* Logo */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4 sm:mb-6">
             <Link to="/">
               <img
                 src={logo}
                 alt="Logo"
-                className="h-25 w-auto cursor-pointer"
+                className="h-20 sm:h-25 w-auto cursor-pointer"
                 style={{ objectFit: "contain" }}
               />
             </Link>
           </div>
 
           <h2
-            className="text-center text-2xl font-bold mb-1"
+            className="text-center text-xl sm:text-2xl font-bold mb-1"
             style={{ color: "#473472" }}
           >
             Reset Password

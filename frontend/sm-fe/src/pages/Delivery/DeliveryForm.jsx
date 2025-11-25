@@ -22,7 +22,7 @@ export default function DeliveryForm() {
 
   const [products, setProducts] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [insufficient, setInsufficient] = useState({}); // { index: { available, required } }
+  const [insufficient, setInsufficient] = useState({}); 
 
   useEffect(() => {
     loadProducts();
@@ -194,14 +194,14 @@ export default function DeliveryForm() {
   };
 
   return (
-    <div className="p-10" style={{ background: "#f2f8ff", minHeight: "100vh" }}>
+    <div className="p-4 sm:p-6 md:p-10" style={{ background: "#f2f8ff", minHeight: "100vh" }}>
       <div className="mx-auto max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6" style={{ color: "#473472" }}>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6" style={{ color: "#473472" }}>
           {isNew ? "New Delivery" : `Delivery ${delivery.reference || ""}`}
         </h1>
 
-        <div className="bg-white p-6 rounded-xl border shadow">
-          <div className="grid grid-cols-2 gap-6 mb-6">
+        <div className="bg-white p-4 sm:p-6 rounded-xl border shadow">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
             <div>
               <label className="font-medium">From (Warehouse)</label>
               <select
@@ -277,20 +277,21 @@ export default function DeliveryForm() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-semibold" style={{ color: "#473472" }}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+            <h2 className="text-base sm:text-lg font-semibold" style={{ color: "#473472" }}>
               Delivery Items
             </h2>
             <button
               onClick={addItem}
-              className="px-4 py-2 rounded text-white"
+              className="px-3 sm:px-4 py-2 rounded text-white text-sm sm:text-base"
               style={{ background: "#473472" }}
             >
               + Add Item
             </button>
           </div>
 
-          <table className="w-full border mb-6">
+          <div className="overflow-x-auto mb-4 sm:mb-6">
+            <table className="w-full border text-xs sm:text-sm min-w-[600px]">
             <thead>
               <tr style={{ borderBottom: "2px solid #473472" }}>
                 <th className="p-2 text-left">Product</th>
@@ -388,6 +389,7 @@ export default function DeliveryForm() {
               )}
             </tbody>
           </table>
+          </div>
 
           <label className="font-medium">Notes</label>
           <textarea
@@ -397,11 +399,11 @@ export default function DeliveryForm() {
             placeholder="Optional note..."
           />
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             <button
               disabled={loading}
               onClick={saveDraft}
-              className="px-6 py-2 rounded text-white font-semibold"
+              className="px-4 sm:px-6 py-2 rounded text-white font-semibold text-sm sm:text-base"
               style={{ background: "#473472" }}
             >
               {loading ? "Saving..." : "Save Draft"}
@@ -410,7 +412,7 @@ export default function DeliveryForm() {
             {id && delivery.status !== "Done" && (
               <button
                 onClick={checkStock}
-                className="px-6 py-2 rounded text-white"
+                className="px-4 sm:px-6 py-2 rounded text-white text-sm sm:text-base"
                 style={{ background: "#53629E" }}
               >
                 Check Stock
@@ -420,7 +422,7 @@ export default function DeliveryForm() {
             {id && delivery.status === "Ready" && (
               <button
                 onClick={validateDelivery}
-                className="px-6 py-2 rounded text-white bg-green-600 font-semibold"
+                className="px-4 sm:px-6 py-2 rounded text-white bg-green-600 font-semibold text-sm sm:text-base"
               >
                 Validate
               </button>
@@ -429,7 +431,7 @@ export default function DeliveryForm() {
             {id && delivery.status !== "Done" && (
               <button
                 onClick={cancelDelivery}
-                className="px-6 py-2 rounded text-white bg-red-500 font-semibold"
+                className="px-4 sm:px-6 py-2 rounded text-white bg-red-500 font-semibold text-sm sm:text-base"
               >
                 Cancel
               </button>

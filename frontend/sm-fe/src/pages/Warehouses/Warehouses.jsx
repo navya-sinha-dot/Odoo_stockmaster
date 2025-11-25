@@ -41,21 +41,21 @@ export default function Warehouses() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6" style={{ color: "#473472" }}>
+    <div className="p-4 sm:p-6">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" style={{ color: "#473472" }}>
         Warehouses
       </h1>
 
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-lg shadow p-6 border border-gray-200 mb-8"
+        className="bg-white rounded-lg shadow p-4 sm:p-6 border border-gray-200 mb-6 sm:mb-8"
       >
-        <h2 className="text-lg font-semibold mb-4" style={{ color: "#53629E" }}>
+        <h2 className="text-base sm:text-lg font-semibold mb-4" style={{ color: "#53629E" }}>
           Add New Warehouse
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <input
             className="p-2 border rounded-md outline-none"
             style={{ borderColor: "#53629E" }}
@@ -93,9 +93,9 @@ export default function Warehouses() {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-lg shadow border border-gray-200"
+        className="bg-white rounded-lg shadow border border-gray-200 overflow-x-auto"
       >
-        <table className="w-full text-sm">
+        <table className="w-full text-xs sm:text-sm min-w-[500px]">
           <thead className="bg-gray-50">
             <tr>
               <th className="p-3 text-left">Name</th>
